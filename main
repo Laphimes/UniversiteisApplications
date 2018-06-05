@@ -1,0 +1,51 @@
+import requests
+import re
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+from urllib.parse import urljoin
+
+
+def getWebsite(url):
+    try :
+        r = requests.get(url, timeout = 10)
+        r.raise_for_status()
+        r.encoding = r.apparent_encoding
+        if r.status_code == 200:
+            return r.text
+        else:
+            print('fail to get website')
+    except:
+        print('try failed')
+
+
+def analysisFunction(content):
+    soup = BeautifulSoup(content,'lxml')
+    links = soup.find_all('a')
+    return links
+
+
+pattern = re.compile('Admission')
+
+
+def main(url):
+    content = getWebsite(url)
+    result = analysisFunction(content)
+    for link in result:
+        if re.search(pattern, link.text):
+            print(link.text)
+            try:
+                if hasattr(link, 'href') and link['href'].startswith('http'):
+                        print(link['href'])
+                if hasattr(link, 'href'):
+                    #补全的链接
+                    o = urljoin(url,link['href'])
+                    print(o)
+            except:
+                print('no href found')
+
+
+
+url = 'https://www.northwestern.edu/'
+url_nyu = 'https://www.nyu.edu/'
+url_purdu = 'http://www.purdue.edu/'
+main(url)
