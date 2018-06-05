@@ -1,0 +1,3 @@
+# UniversiteisApplications
+WebSpidersCollectingApplicationRequirements
+基本爬取网站整体网站的链接后，先筛选出所有链接
